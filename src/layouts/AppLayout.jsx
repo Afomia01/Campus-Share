@@ -60,7 +60,7 @@ const AppLayout = () => {
           </div>
           <button
             onClick={logout}
-            className="flex items-center gap-2 text-sm text-red-600 hover:text-red-700 w-full px-1"
+            className="flex items-center gap-2 text-sm text-red-600 hover:text-red-700 w-full px-2 py-5.5 rounded-md hover:bg-red-50"
           >
             <LogOut size={16} /> Sign out
           </button>

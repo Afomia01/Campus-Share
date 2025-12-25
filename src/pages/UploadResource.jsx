@@ -12,7 +12,7 @@ const UploadResource = () => {
     description: "",
     type: "notes",
     sharing_level: "public",
-    tags: "", // Helper for comma-separated input
+    tags: "",
   });
 
   const handleSubmit = async (e) => {
@@ -23,7 +23,7 @@ const UploadResource = () => {
 
     // Create FormData object (Standard Browser API)
     const data = new FormData();
-    data.append("file", file); // 'file' must match backend expectation
+    data.append("file", file);
     data.append("title", formData.title);
     data.append("description", formData.description);
     data.append("type", formData.type);
@@ -173,7 +173,6 @@ const UploadResource = () => {
                 >
                   <option value="public">Public (Everyone)</option>
                   <option value="university">My University Only</option>
-                  <option value="course">My Course Only</option>
                 </select>
               </div>
             </div>
