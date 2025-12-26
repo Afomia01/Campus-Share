@@ -99,7 +99,7 @@ src/
     Create a `.env` file in the root directory:
     ```env
     # URL of your Go Backend API
-    VITE_API_URL=http://localhost:8080/api/v1
+    VITE_API_URL=https://campus-share-backend.onrender.com/api/v1
     ```
 
 4.  **Run Development Server**
