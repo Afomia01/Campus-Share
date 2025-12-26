@@ -15,10 +15,13 @@ const Login = () => {
       await login(formData.email, formData.password);
       navigate("/app");
     } catch (err) {
-      setError(err.response?.data?.error || "Invalid credentials");
+      if (!err.response) {
+        setError("Server is offline. Please make sure the backend is running.");
+      } else {
+        setError(err.response?.data?.error || "Invalid email or password");
+      }
     }
   };
-
 
     return (
       <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-50 to-blue-100 px-4">

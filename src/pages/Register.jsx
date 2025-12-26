@@ -21,7 +21,16 @@ const Register = () => {
       await register(formData);
       navigate("/app");
     } catch (err) {
-      setError(err.response?.data?.error || "Registration failed");
+      const rawError = err.response?.data?.error || "";
+      
+      // Friendly Translation
+      if (rawError.includes("23505")) {
+        setError("This email is already registered. Try logging in!");
+      } else if (rawError.includes("Password") && rawError.includes("min")) {
+        setError("Password is too short (minimum 8 characters).");
+      } else {
+        setError("Registration failed. Please check your information.");
+      }
     }
   };
 
