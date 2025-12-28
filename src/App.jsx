@@ -14,11 +14,14 @@ import UploadResource from "./pages/UploadResource";
 import ResourceDetails from "./pages/ResourceDetails";
 import Bookmarks from "./pages/Bookmarks";
 import Profile from "./pages/Profile";
+import Chat from "./pages/Chat";
+import LandingPage from "./features/landing/LandingPage.jsx";
 function App() {
   return (
     <AuthProvider>
       <Router>
         <Routes>
+          <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
@@ -29,6 +32,7 @@ function App() {
               <Route path="resource/:id" element={<ResourceDetails />} />
               <Route path="profile" element={<Profile />} />
               <Route path="bookmarks" element={<Bookmarks />} />
+              <Route path="chat" element={<Chat />} />
             </Route>
           </Route>
 

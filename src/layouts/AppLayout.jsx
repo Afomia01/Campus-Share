@@ -1,6 +1,13 @@
 import { Outlet, Link, useLocation } from "react-router-dom";
 import { useAuth } from "../features/auth/AuthContext";
-import { LayoutGrid, UploadCloud, User, LogOut, Bookmark } from "lucide-react";
+import {
+  LayoutGrid,
+  UploadCloud,
+  User,
+  LogOut,
+  Bookmark,
+  MessageSquare,
+} from "lucide-react";
 import { cn } from "../lib/utils";
 
 const AppLayout = () => {
@@ -12,6 +19,7 @@ const AppLayout = () => {
     { icon: UploadCloud, label: "Upload Resource", path: "/app/upload" },
     { icon: Bookmark, label: "Saved", path: "/app/bookmarks" },
     { icon: User, label: "Profile", path: "/app/profile" },
+    { icon: MessageSquare, label: "Chat (Coming soon...)", path: "/app/chat" },
   ];
 
   return (
