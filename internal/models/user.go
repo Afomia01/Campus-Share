@@ -20,7 +20,7 @@ const (
 type User struct {
 	ID           uuid.UUID `gorm:"type:uuid;primary_key;default:gen_random_uuid()" json:"id"`
 	Email        string    `gorm:"uniqueIndex;not null" json:"email"`
-	StudentID    string    `gorm:"not null" json:"student_id,omitempty"`
+	StudentID    string    `gorm:"uniqueIndex" json:"student_id,omitempty"`
 	PasswordHash string    `gorm:"not null" json:"-"`
 	FirstName    string    `gorm:"not null" json:"first_name"`
 	LastName     string    `gorm:"not null" json:"last_name"`
@@ -37,7 +37,7 @@ type User struct {
 	Major        string      `json:"major,omitempty"`
 
 	// OAuth
-	GoogleID string `gorm:"uniqueIndex" json:"-"`
+	GoogleID *string `gorm:"index" json:"-"`
 
 	// Timestamps
 	CreatedAt time.Time      `json:"created_at"`
