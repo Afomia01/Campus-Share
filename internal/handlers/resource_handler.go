@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/campus-share/backend/internal/config"
+	"github.com/campus-share/backend/internal/events"
 	"github.com/campus-share/backend/internal/models"
 	"github.com/campus-share/backend/internal/services"
 	"github.com/campus-share/backend/internal/storage"
@@ -101,6 +102,21 @@ func (h *ResourceHandler) CreateResource(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+
+	// Publish event
+	go func() {
+		eventData := map[string]interface{}{
+			"resource_id": resource.ID,
+			"title":       resource.Title,
+			"user_id":     resource.UserID,
+			"created_at":  resource.CreatedAt,
+		}
+		if err := events.PublishEvent(c.Request.Context(), "resource.created", eventData); err != nil {
+			// Log error but don't fail request
+			// In a real app use a logger
+			println("Failed to publish event:", err.Error())
+		}
+	}()
 
 	c.JSON(http.StatusCreated, gin.H{"resource": resource})
 }
