@@ -132,9 +132,12 @@ const Hero = () => {
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Button className="w-full sm:w-auto flex items-center justify-center gap-2">
+            <Link
+              to="/register"
+              className="w-full sm:w-auto flex items-center justify-center gap-2"
+            >
               Start Exploring <ArrowRight size={16} />
-            </Button>
+            </Link>
           </div>
         </motion.div>
       </div>
