@@ -79,6 +79,12 @@ src/
 
 ## ⚡ Getting Started
 
+## Option 1 Deployed In Vercel
+### Deployment Link
+* ```https://campus-share-iota.vercel.app/ ```
+
+  
+## Option 2 Local Deployment steps
 ### Prerequisites
 *   Node.js (v18 or higher recommended)
 *   npm
