@@ -2,7 +2,7 @@
 
 An open-source React application built for university students to share, search, and download academic resources (notes, slides, exam papers) across campuses. This project serves as the client-side interface for the Go-based backend API.
 
-![Banner Placeholder](https://via.placeholder.com/1200x400?text=Campus+Share+Platform+Banner)
+<img width="1901" height="908" alt="image" src="https://github.com/user-attachments/assets/486d97cd-aecf-415f-8583-dac6de039a27" />
 *> **Image Description:** A wide banner shot of the application homepage showing the logo, navigation bar, and a welcoming hero section.*
 
 ## 🚀 Features Implemented
