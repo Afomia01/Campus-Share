@@ -68,7 +68,7 @@ const Navbar = () => (
   <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-6 md:px-12">
     <div className="flex items-center gap-3">
       <img
-        src="/campus-share.png"
+        src="/campus-share.jpg"
         alt="CampusShare Logo"
         className="h-16 w-auto object-contain"
       />

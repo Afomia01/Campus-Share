@@ -14,11 +14,13 @@ import UploadResource from "./pages/UploadResource";
 import ResourceDetails from "./pages/ResourceDetails";
 import Bookmarks from "./pages/Bookmarks";
 import Profile from "./pages/Profile";
+import LandingPage from "./features/landing/LandingPage";
 function App() {
   return (
     <AuthProvider>
       <Router>
         <Routes>
+          <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
@@ -31,8 +33,8 @@ function App() {
               <Route path="bookmarks" element={<Bookmarks />} />
             </Route>
           </Route>
-
-          <Route path="/" element={<Navigate to="/app" replace />} />
+{/* //Redirect any unknown routes back to home */}
+          <Route path="*" element={<Navigate to="/app" replace />} />
         </Routes>
       </Router>
     </AuthProvider>

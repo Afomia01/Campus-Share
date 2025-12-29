@@ -39,12 +39,14 @@ const Bookmarks = () => {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {bookmarks.map((bookmark) => (
-            // PDF Page 11: Bookmark object contains { id, resource: {...} }
-            // We pass the nested resource object to the card
-            <ResourceCard key={bookmark.id} resource={bookmark.resource} />
-          ))}
-        </div>
+        {bookmarks.map((bookmark) => (
+          <ResourceCard 
+            key={bookmark.id} 
+            // Spread the resource and MANUALLY set is_bookmarked to true
+            resource={{ ...bookmark.resource, is_bookmarked: true }} 
+          />
+        ))}
+      </div>
       )}
     </div>
   );

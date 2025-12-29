@@ -2,7 +2,7 @@ import { Outlet, Link, useLocation } from "react-router-dom";
 import { useAuth } from "../features/auth/AuthContext";
 import { LayoutGrid, UploadCloud, User, LogOut, Bookmark, Menu } from "lucide-react";
 import { cn } from "../lib/utils";
-
+import App from "../App";
 const AppLayout = () => {
   const { user, logout } = useAuth();
   const location = useLocation();
@@ -20,12 +20,11 @@ const AppLayout = () => {
       {/* Sidebar - Desktop Only */}
       <aside className="w-64 bg-white border-r border-slate-200 hidden md:flex flex-col fixed h-full z-20">
         <div className="p-8">
-          <div className="flex items-center gap-2">
-            <div className="h-8 w-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-bold">C</div>
-            <h1 className="text-xl font-bold text-slate-900 tracking-tight">
-              CampusShare
-            </h1>
-          </div>
+          <Link to="/app" className="flex items-center gap-2 hover:opacity-80 transition-all">
+              <div className="h-8 w-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-bold">C</div>
+              <h1 className="text-xl font-bold text-slate-900 tracking-tight">CampusShare</h1>
+            </Link>
+            
         </div>
 
         <nav className="flex-1 px-4 space-y-1.5 mt-2">

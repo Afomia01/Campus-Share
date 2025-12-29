@@ -32,4 +32,21 @@ export const resourceService = {
     console.log(id);
     return response.data.download_url; // Returns signed S3 URL
   },
+  async addBookmark(resourceId) {
+    const response = await api.post("/bookmarks", { resource_id: resourceId });
+    return response.data;
+  },
+
+  async removeBookmark(resourceId) {
+    try {
+      // If your backend expects a DELETE request to /bookmarks/:id
+      const response = await api.delete(`/bookmarks/${resourceId}`);
+      return response.data;
+    } catch (error) {
+      // If the above fails, some backends use a POST to "un-bookmark"
+      // or a different URL structure. 
+      console.warn("Standard delete failed, trying alternative route...");
+      throw error; 
+    }
+  }
 };
