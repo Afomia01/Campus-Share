@@ -17,10 +17,30 @@ services:
       - JWT_SECRET=dev_secret
       - UPLOAD_DIR=/app/uploads
       - BASE_URL=http://localhost:8080
+      - REDIS_URL=redis://redis:6379/0
     volumes:
       - ./uploads:/app/uploads
     depends_on:
       - db
+      - redis
+    restart: unless-stopped
+
+  notification-service:
+    build: .
+    command: ./notification-service
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      - redis
+    restart: unless-stopped
+
+  analytics-service:
+    build: .
+    command: ./analytics-service
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      - redis
     restart: unless-stopped
 
   db:
@@ -33,6 +53,12 @@ services:
       - POSTGRES_DB=campus_share
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
     restart: unless-stopped
 
 volumes:

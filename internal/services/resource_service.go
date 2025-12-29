@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"mime/multipart"
+	"path/filepath"
 	"time"
 
 	"github.com/google/uuid"
@@ -59,15 +60,33 @@ func (s *ResourceService) CreateResource(userID uuid.UUID, req CreateResourceReq
 
 	// Validate file type
 	fileType := req.File.Header.Get("Content-Type")
+
+	// Simple extension check for the demo
+	ext := filepath.Ext(req.File.Filename)
+	if len(ext) > 1 {
+		ext = ext[1:] // remove dot
+	}
+
 	allowed := false
 	for _, allowedType := range allowedTypes {
-		if fileType == fmt.Sprintf("application/%s", allowedType) ||
-			fileType == fmt.Sprintf("image/%s", allowedType) ||
-			fileType == fmt.Sprintf("video/%s", allowedType) {
+		if ext == allowedType {
 			allowed = true
 			break
 		}
 	}
+
+	if !allowed {
+		// Fallback to MIME type check if extension check failed (legacy behavior)
+		for _, allowedType := range allowedTypes {
+			if fileType == fmt.Sprintf("application/%s", allowedType) ||
+				fileType == fmt.Sprintf("image/%s", allowedType) ||
+				fileType == fmt.Sprintf("video/%s", allowedType) {
+				allowed = true
+				break
+			}
+		}
+	}
+
 	if !allowed {
 		return nil, ErrInvalidFileType
 	}

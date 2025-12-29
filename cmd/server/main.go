@@ -7,6 +7,7 @@ import (
 
 	"github.com/campus-share/backend/internal/config"
 	"github.com/campus-share/backend/internal/database"
+	"github.com/campus-share/backend/internal/events"
 	"github.com/campus-share/backend/internal/handlers"
 	"github.com/campus-share/backend/internal/middleware"
 	"github.com/gin-gonic/gin"
@@ -28,6 +29,13 @@ func main() {
 		log.Fatalf("Failed to connect to database: %v", err)
 	}
 	defer database.Close()
+
+	// Connect to Redis
+	if err := events.InitRedis(cfg); err != nil {
+		log.Printf("Failed to connect to Redis: %v", err)
+		// We don't fatal here to allow running without Redis in dev if needed,
+		// but for this project we want it to work.
+	}
 
 	// Run migrations if flag is set
 	if *migrateFlag {

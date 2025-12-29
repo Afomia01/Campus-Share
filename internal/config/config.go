@@ -19,6 +19,12 @@ type Config struct {
 	CORS      CORSConfig
 	Upload    UploadConfig
 	RateLimit RateLimitConfig
+	Redis     RedisConfig
+}
+
+// RedisConfig holds redis-related configuration
+type RedisConfig struct {
+	URL string
 }
 
 // ServerConfig holds server-related configuration
@@ -115,11 +121,14 @@ func Load() (*Config, error) {
 		},
 		Upload: UploadConfig{
 			MaxFileSizeMB:    getEnvAsInt("MAX_FILE_SIZE_MB", 100),
-			AllowedFileTypes: getEnvAsSlice("ALLOWED_FILE_TYPES", []string{"pdf", "doc", "docx", "ppt", "pptx", "xls", "xlsx", "jpg", "jpeg", "png", "gif", "mp4", "avi"}),
+			AllowedFileTypes: getEnvAsSlice("ALLOWED_FILE_TYPES", []string{"pdf", "doc", "docx", "ppt", "pptx", "xls", "xlsx", "jpg", "jpeg", "png", "gif", "mp4", "avi", "txt"}),
 		},
 		RateLimit: RateLimitConfig{
 			Requests: getEnvAsInt("RATE_LIMIT_REQUESTS", 100),
 			Window:   time.Duration(getEnvAsInt("RATE_LIMIT_WINDOW_MINUTES", 15)) * time.Minute,
+		},
+		Redis: RedisConfig{
+			URL: getEnv("REDIS_URL", "redis://localhost:6379/0"),
 		},
 	}
 
