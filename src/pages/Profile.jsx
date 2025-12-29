@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useAuth } from "../features/auth/AuthContext";
 import { authService } from "../services/auth.service";
-import { Loader2 } from "lucide-react";
+import { Loader2, User, Mail, BookOpen, GraduationCap, Edit3, Check, X } from "lucide-react";
 
 const Profile = () => {
-  const { user } = useAuth(); // We can use login to refresh context if needed, or just manual update
+  const { user } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -19,7 +19,7 @@ const Profile = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const updatedUser = await authService.updateProfile(formData);
+      await authService.updateProfile(formData);
       alert("Profile updated successfully!");
       setIsEditing(false);
       window.location.reload();
@@ -32,124 +32,118 @@ const Profile = () => {
   };
 
   return (
-    <div className="max-w-2xl mx-auto space-y-6">
-      <h1 className="text-2xl font-bold text-gray-900">My Profile</h1>
-
-      {/* Profile Header Card */}
-      <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 flex items-center gap-6">
-        <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 text-3xl font-bold">
-          {user?.first_name?.[0]}
-        </div>
-        <div>
-          <h2 className="text-xl font-semibold text-gray-900">
-            {user?.first_name} {user?.last_name}
-          </h2>
-          <p className="text-gray-500">{user?.email}</p>
-          <span className="inline-block mt-2 px-3 py-1 bg-blue-50 text-blue-700 text-xs font-medium rounded-full uppercase">
-            {user?.role}
-          </span>
-        </div>
+    <div className="max-w-4xl mx-auto pb-10">
+      <div className="mb-8">
+        <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Account Settings</h1>
+        <p className="text-slate-500 mt-2 font-medium">Manage your university profile and preferences.</p>
       </div>
 
-      {/* Edit Form */}
-      <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-200">
-        <div className="flex justify-between items-center mb-6">
-          <h3 className="text-lg font-semibold text-gray-900">
-            Personal Information
-          </h3>
-          {!isEditing && (
-            <button
-              onClick={() => setIsEditing(true)}
-              className="text-blue-600 hover:text-blue-700 text-sm font-medium"
-            >
-              Edit Profile
-            </button>
-          )}
-        </div>
-
-        <form onSubmit={handleSubmit}>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                First Name
-              </label>
-              <input
-                disabled={!isEditing}
-                className="w-full p-2.5 border border-gray-300 rounded-lg disabled:bg-gray-50 disabled:text-gray-500"
-                value={formData.first_name}
-                onChange={(e) =>
-                  setFormData({ ...formData, first_name: e.target.value })
-                }
-              />
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Left Column: Avatar Card */}
+        <div className="lg:col-span-1">
+          <div className="bg-white rounded-3xl p-8 shadow-xl shadow-slate-200/50 border border-slate-100 text-center sticky top-8">
+            <div className="w-24 h-24 bg-indigo-100 rounded-3xl flex items-center justify-center text-indigo-600 mx-auto mb-4 border-2 border-indigo-50 shadow-inner text-3xl font-bold">
+              {user?.first_name?.[0]}
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Last Name
-              </label>
-              <input
-                disabled={!isEditing}
-                className="w-full p-2.5 border border-gray-300 rounded-lg disabled:bg-gray-50 disabled:text-gray-500"
-                value={formData.last_name}
-                onChange={(e) =>
-                  setFormData({ ...formData, last_name: e.target.value })
-                }
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Major
-              </label>
-              <input
-                disabled={!isEditing}
-                placeholder="e.g. Computer Science"
-                className="w-full p-2.5 border border-gray-300 rounded-lg disabled:bg-gray-50 disabled:text-gray-500"
-                value={formData.major}
-                onChange={(e) =>
-                  setFormData({ ...formData, major: e.target.value })
-                }
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Year
-              </label>
-              <select
-                disabled={!isEditing}
-                className="w-full p-2.5 border border-gray-300 rounded-lg disabled:bg-gray-50 disabled:text-gray-500 bg-white"
-                value={formData.year}
-                onChange={(e) =>
-                  setFormData({ ...formData, year: parseInt(e.target.value) })
-                }
-              >
-                <option value={1}>1st Year</option>
-                <option value={2}>2nd Year</option>
-                <option value={3}>3rd Year</option>
-                <option value={4}>4th Year</option>
-                <option value={5}>5th Year</option>
-              </select>
+            <h2 className="text-xl font-bold text-slate-900">{user?.first_name} {user?.last_name}</h2>
+            <p className="text-sm text-slate-400 font-medium mt-1">{user?.email}</p>
+            
+            <div className="mt-6 pt-6 border-t border-slate-50">
+               <span className="px-4 py-1.5 bg-indigo-50 text-indigo-700 text-[10px] font-bold uppercase tracking-widest rounded-full">
+                {user?.role || 'Student'}
+              </span>
             </div>
           </div>
+        </div>
 
-          {isEditing && (
-            <div className="mt-8 flex gap-3 justify-end">
-              <button
-                type="button"
-                onClick={() => setIsEditing(false)}
-                className="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                disabled={loading}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 flex items-center gap-2"
-              >
-                {loading && <Loader2 className="animate-spin" size={16} />}
-                Save Changes
-              </button>
+        {/* Right Column: Edit Form */}
+        <div className="lg:col-span-2">
+          <div className="bg-white rounded-3xl p-8 shadow-xl shadow-slate-200/50 border border-slate-100">
+            <div className="flex justify-between items-center mb-8">
+              <h3 className="text-lg font-bold text-slate-900 flex items-center gap-2">
+                <User className="text-indigo-600" size={20} /> Personal Information
+              </h3>
+              {!isEditing && (
+                <button
+                  onClick={() => setIsEditing(true)}
+                  className="flex items-center gap-2 px-4 py-2 text-indigo-600 hover:bg-indigo-50 rounded-xl text-sm font-bold transition-colors"
+                >
+                  <Edit3 size={16} /> Edit Profile
+                </button>
+              )}
             </div>
-          )}
-        </form>
+
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="text-xs font-bold uppercase tracking-widest text-slate-400 ml-1">First Name</label>
+                  <input
+                    disabled={!isEditing}
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 disabled:opacity-60 transition-all"
+                    value={formData.first_name}
+                    onChange={(e) => setFormData({ ...formData, first_name: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs font-bold uppercase tracking-widest text-slate-400 ml-1">Last Name</label>
+                  <input
+                    disabled={!isEditing}
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 disabled:opacity-60 transition-all"
+                    value={formData.last_name}
+                    onChange={(e) => setFormData({ ...formData, last_name: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs font-bold uppercase tracking-widest text-slate-400 ml-1 flex items-center gap-2">
+                    <BookOpen size={14}/> Major
+                  </label>
+                  <input
+                    disabled={!isEditing}
+                    placeholder="e.g. Computer Science"
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 disabled:opacity-60 transition-all"
+                    value={formData.major}
+                    onChange={(e) => setFormData({ ...formData, major: e.target.value })}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs font-bold uppercase tracking-widest text-slate-400 ml-1 flex items-center gap-2">
+                    <GraduationCap size={14}/> Academic Year
+                  </label>
+                  <select
+                    disabled={!isEditing}
+                    className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl outline-none focus:border-indigo-500 disabled:opacity-60 transition-all appearance-none bg-white"
+                    value={formData.year}
+                    onChange={(e) => setFormData({ ...formData, year: parseInt(e.target.value) })}
+                  >
+                    {[1, 2, 3, 4, 5].map(y => (
+                      <option key={y} value={y}>{y}{y === 1 ? 'st' : y === 2 ? 'nd' : y === 3 ? 'rd' : 'th'} Year</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              {isEditing && (
+                <div className="pt-6 border-t border-slate-50 flex gap-3 justify-end">
+                  <button
+                    type="button"
+                    onClick={() => setIsEditing(false)}
+                    className="px-6 py-2.5 rounded-xl text-slate-500 font-bold hover:bg-slate-100 transition-colors flex items-center gap-2"
+                  >
+                    <X size={18} /> Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="px-6 py-2.5 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 shadow-lg shadow-indigo-100 flex items-center gap-2 transition-all active:scale-95"
+                  >
+                    {loading ? <Loader2 className="animate-spin" size={18} /> : <Check size={18} />}
+                    Save Changes
+                  </button>
+                </div>
+              )}
+            </form>
+          </div>
+        </div>
       </div>
     </div>
   );

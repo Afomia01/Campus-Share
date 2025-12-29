@@ -14,8 +14,7 @@ import UploadResource from "./pages/UploadResource";
 import ResourceDetails from "./pages/ResourceDetails";
 import Bookmarks from "./pages/Bookmarks";
 import Profile from "./pages/Profile";
-import Chat from "./pages/Chat";
-import LandingPage from "./features/landing/LandingPage.jsx";
+import LandingPage from "./features/landing/LandingPage";
 function App() {
   return (
     <AuthProvider>
@@ -32,11 +31,10 @@ function App() {
               <Route path="resource/:id" element={<ResourceDetails />} />
               <Route path="profile" element={<Profile />} />
               <Route path="bookmarks" element={<Bookmarks />} />
-              <Route path="chat" element={<Chat />} />
             </Route>
           </Route>
-
-          <Route path="/" element={<Navigate to="/app" replace />} />
+          {/* //Redirect any unknown routes back to home */}
+          <Route path="*" element={<Navigate to="/app" replace />} />
         </Routes>
       </Router>
     </AuthProvider>

@@ -43,4 +43,9 @@ export const socialService = {
     const response = await api.get("/bookmarks");
     return response.data.bookmarks;
   },
+
+  async deleteBookmark(bookmarkId) {
+    const response = await api.delete(`/bookmarks/${bookmarkId}`);
+    return response.data;
+  },
 };
