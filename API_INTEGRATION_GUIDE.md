@@ -1828,77 +1828,30 @@ async function loadResources() {
 
 ---
 
-## Testing the API
+## New Features
 
-### Using cURL
+The backend now includes advanced features beyond basic CRUD operations:
 
-#### Register
-```bash
-curl -X POST http://localhost:8080/api/v1/auth/register \
-  -H "Content-Type: application/json" \
-  -d '{
-    "email": "test@example.com",
-    "password": "password123",
-    "first_name": "Test",
-    "last_name": "User"
-  }'
-```
+- **Report Content System** - Users can report inappropriate content
+- **Admin Moderation Dashboard** - Complete admin tools for managing the platform
+- **Analytics & Statistics** - Platform-wide analytics and insights
+- **Resource Recommendations** - Similar resources and personalized recommendations
+- **User Following System** - Social networking with activity feeds
+- **Discussion Forums** - Course-specific forums with voting and nested replies
 
-#### Login
-```bash
-curl -X POST http://localhost:8080/api/v1/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{
-    "email": "test@example.com",
-    "password": "password123"
-  }'
-```
-
-#### Get Resources (with token)
-```bash
-curl -X GET http://localhost:8080/api/v1/resources \
-  -H "Authorization: Bearer YOUR_TOKEN_HERE"
-```
-
-### Using Postman
-
-1. **Create Environment Variables:**
-   - `base_url`: `http://localhost:8080/api/v1`
-   - `token`: (set after login)
-
-2. **Register/Login:**
-   - Method: POST
-   - URL: `{{base_url}}/auth/register`
-   - Body: JSON with user data
-   - Save token from response to `token` variable
-
-3. **Authenticated Requests:**
-   - Add header: `Authorization: Bearer {{token}}`
-
-### Using Browser DevTools
-
-```javascript
-// In browser console
-const token = 'YOUR_TOKEN_HERE';
-
-fetch('http://localhost:8080/api/v1/resources', {
-  headers: {
-    'Authorization': `Bearer ${token}`
-  }
-})
-.then(res => res.json())
-.then(data => console.log(data));
-```
+**📖 See [NEW_FEATURES_API_GUIDE.md](./NEW_FEATURES_API_GUIDE.md) for complete documentation of all new features.**
 
 ---
 
-## Postman Collection
+## Support
 
-For easier testing and integration, a Postman collection is included in the repository.
-
-1.  **Download**: Get the `postman_collection.json` file from the root of this repository.
-2.  **Import**: Open Postman -> File -> Import -> Upload the file.
-3.  **Environment**: The collection comes with a `base_url` variable pre-configured for the production environment. You can change this to `http://localhost:8080/api/v1` for local development.
+For questions or issues:
+- Check the backend README.md
+- Review error messages in API responses
+- See NEW_FEATURES_API_GUIDE.md for advanced features
+- Contact the backend team
 
 ---
+
+**Last Updated:** December 29, 2025
 
