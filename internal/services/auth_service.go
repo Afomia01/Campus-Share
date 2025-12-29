@@ -14,11 +14,11 @@ import (
 )
 
 var (
-	ErrUserNotFound      = errors.New("user not found")
+	ErrUserNotFound       = errors.New("user not found")
 	ErrInvalidCredentials = errors.New("invalid credentials")
-	ErrUserExists        = errors.New("user already exists")
-	ErrEmailRequired     = errors.New("email is required")
-	ErrPasswordRequired  = errors.New("password is required")
+	ErrUserExists         = errors.New("user already exists")
+	ErrEmailRequired      = errors.New("email is required")
+	ErrPasswordRequired   = errors.New("password is required")
 )
 
 // AuthService handles authentication-related operations
@@ -32,7 +32,7 @@ func NewAuthService() *AuthService {
 // RegisterRequest represents a user registration request
 type RegisterRequest struct {
 	Email     string `json:"email" binding:"required,email"`
-	Password  string `json:"password" binding:"required,min=8"`
+	Password  string `json:"password" binding:"required"`
 	FirstName string `json:"first_name" binding:"required"`
 	LastName  string `json:"last_name" binding:"required"`
 	StudentID string `json:"student_id,omitempty"`
@@ -58,6 +58,14 @@ func (s *AuthService) Register(req RegisterRequest, jwtSecret string, expiration
 	var existingUser models.User
 	if err := database.DB.Where("email = ?", req.Email).First(&existingUser).Error; err == nil {
 		return nil, "", ErrUserExists
+	}
+
+	// Check if student ID already exists (if provided)
+	if req.StudentID != "" {
+		var userWithID models.User
+		if err := database.DB.Where("student_id = ?", req.StudentID).First(&userWithID).Error; err == nil {
+			return nil, "", errors.New("student ID already exists")
+		}
 	}
 
 	// Hash password
@@ -180,5 +188,3 @@ func (s *AuthService) UpdateProfile(userID uuid.UUID, req UpdateProfileRequest) 
 	// Reload with relations
 	return s.GetUserByID(userID)
 }
-
-

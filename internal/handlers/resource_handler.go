@@ -1,15 +1,17 @@
 package handlers
 
 import (
+	"encoding/json"
 	"net/http"
 	"strconv"
 
-	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 	"github.com/campus-share/backend/internal/config"
+	"github.com/campus-share/backend/internal/events"
 	"github.com/campus-share/backend/internal/models"
 	"github.com/campus-share/backend/internal/services"
 	"github.com/campus-share/backend/internal/storage"
+	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 // ResourceHandler handles resource-related HTTP requests
@@ -20,14 +22,12 @@ type ResourceHandler struct {
 
 // NewResourceHandler creates a new resource handler
 func NewResourceHandler(cfg *config.Config) (*ResourceHandler, error) {
-	s3Storage, err := storage.NewS3Storage(&cfg.AWS)
+	localStorage, err := storage.NewLocalStorage(&cfg.Storage)
 	if err != nil {
 		return nil, err
 	}
 
-	// If S3 is not configured, create a service with nil storage
-	// This will cause errors when trying to upload, but allows server to start
-	resourceService := services.NewResourceService(s3Storage)
+	resourceService := services.NewResourceService(localStorage)
 
 	return &ResourceHandler{
 		resourceService: resourceService,
@@ -52,6 +52,7 @@ func (h *ResourceHandler) CreateResource(c *gin.Context) {
 	// Get file from form
 	file, err := c.FormFile("file")
 	if err != nil {
+		println("Error getting file:", err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"error": "file is required"})
 		return
 	}
@@ -96,6 +97,7 @@ func (h *ResourceHandler) CreateResource(c *gin.Context) {
 		h.config.Upload.AllowedFileTypes,
 	)
 	if err != nil {
+		println("Error creating resource:", err.Error())
 		if err == services.ErrFileTooLarge || err == services.ErrInvalidFileType {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
@@ -103,6 +105,29 @@ func (h *ResourceHandler) CreateResource(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+
+	// Publish event
+	go func() {
+		eventData := map[string]interface{}{
+			"resource_id": resource.ID,
+			"title":       resource.Title,
+			"user_id":     resource.UserID,
+			"created_at":  resource.CreatedAt,
+		}
+
+		// Marshal to JSON
+		jsonData, err := json.Marshal(eventData)
+		if err != nil {
+			println("Failed to marshal event data:", err.Error())
+			return
+		}
+
+		if err := events.PublishEvent(c.Request.Context(), "resource.created", jsonData); err != nil {
+			// Log error but don't fail request
+			// In a real app use a logger
+			println("Failed to publish event:", err.Error())
+		}
+	}()
 
 	c.JSON(http.StatusCreated, gin.H{"resource": resource})
 }
@@ -279,4 +304,3 @@ func (h *ResourceHandler) DownloadResource(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"download_url": url})
 }
-

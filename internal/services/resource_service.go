@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"mime/multipart"
+	"path/filepath"
 	"time"
 
 	"github.com/google/uuid"
@@ -23,27 +24,27 @@ var (
 
 // ResourceService handles resource-related operations
 type ResourceService struct {
-	storage *storage.S3Storage
+	storage storage.Storage
 }
 
 // NewResourceService creates a new resource service
-func NewResourceService(s3Storage *storage.S3Storage) *ResourceService {
+func NewResourceService(store storage.Storage) *ResourceService {
 	return &ResourceService{
-		storage: s3Storage,
+		storage: store,
 	}
 }
 
 // CreateResourceRequest represents a request to create a resource
 type CreateResourceRequest struct {
-	Title        string                 `json:"title" binding:"required"`
-	Description  string                 `json:"description"`
-	Type         models.ResourceType    `json:"type" binding:"required"`
-	UniversityID *uuid.UUID             `json:"university_id,omitempty"`
-	DepartmentID *uuid.UUID             `json:"department_id,omitempty"`
-	CourseID     *uuid.UUID             `json:"course_id,omitempty"`
-	SharingLevel models.SharingLevel    `json:"sharing_level"`
-	Tags         []string               `json:"tags,omitempty"`
-	File         multipart.FileHeader   `json:"-"`
+	Title        string               `json:"title" binding:"required"`
+	Description  string               `json:"description"`
+	Type         models.ResourceType  `json:"type" binding:"required"`
+	UniversityID *uuid.UUID           `json:"university_id,omitempty"`
+	DepartmentID *uuid.UUID           `json:"department_id,omitempty"`
+	CourseID     *uuid.UUID           `json:"course_id,omitempty"`
+	SharingLevel models.SharingLevel  `json:"sharing_level"`
+	Tags         []string             `json:"tags,omitempty"`
+	File         multipart.FileHeader `json:"-"`
 }
 
 // CreateResource creates a new resource
@@ -59,15 +60,33 @@ func (s *ResourceService) CreateResource(userID uuid.UUID, req CreateResourceReq
 
 	// Validate file type
 	fileType := req.File.Header.Get("Content-Type")
+
+	// Simple extension check for the demo
+	ext := filepath.Ext(req.File.Filename)
+	if len(ext) > 1 {
+		ext = ext[1:] // remove dot
+	}
+
 	allowed := false
 	for _, allowedType := range allowedTypes {
-		if fileType == fmt.Sprintf("application/%s", allowedType) || 
-		   fileType == fmt.Sprintf("image/%s", allowedType) ||
-		   fileType == fmt.Sprintf("video/%s", allowedType) {
+		if ext == allowedType {
 			allowed = true
 			break
 		}
 	}
+
+	if !allowed {
+		// Fallback to MIME type check if extension check failed (legacy behavior)
+		for _, allowedType := range allowedTypes {
+			if fileType == fmt.Sprintf("application/%s", allowedType) ||
+				fileType == fmt.Sprintf("image/%s", allowedType) ||
+				fileType == fmt.Sprintf("video/%s", allowedType) {
+				allowed = true
+				break
+			}
+		}
+	}
+
 	if !allowed {
 		return nil, ErrInvalidFileType
 	}
@@ -161,15 +180,15 @@ func (s *ResourceService) GetResourceByID(resourceID uuid.UUID) (*models.Resourc
 
 // ListResourcesRequest represents a request to list resources
 type ListResourcesRequest struct {
-	Page         int       `form:"page"`
-	PageSize     int       `form:"page_size"`
-	Search       string    `form:"search"`
-	Type         string    `form:"type"`
+	Page         int        `form:"page"`
+	PageSize     int        `form:"page_size"`
+	Search       string     `form:"search"`
+	Type         string     `form:"type"`
 	UniversityID *uuid.UUID `form:"university_id"`
 	DepartmentID *uuid.UUID `form:"department_id"`
 	CourseID     *uuid.UUID `form:"course_id"`
-	Tag          string    `form:"tag"`
-	SortBy       string    `form:"sort_by"` // "newest", "popular", "rating"
+	Tag          string     `form:"tag"`
+	SortBy       string     `form:"sort_by"` // "newest", "popular", "rating"
 }
 
 // ListResources lists resources with filtering and pagination
@@ -272,11 +291,11 @@ func (s *ResourceService) ListResources(req ListResourcesRequest, userID *uuid.U
 
 // UpdateResourceRequest represents a request to update a resource
 type UpdateResourceRequest struct {
-	Title        string              `json:"title,omitempty"`
-	Description  string              `json:"description,omitempty"`
+	Title        string               `json:"title,omitempty"`
+	Description  string               `json:"description,omitempty"`
 	Type         *models.ResourceType `json:"type,omitempty"`
 	SharingLevel *models.SharingLevel `json:"sharing_level,omitempty"`
-	Tags         []string            `json:"tags,omitempty"`
+	Tags         []string             `json:"tags,omitempty"`
 }
 
 // UpdateResource updates a resource
@@ -406,5 +425,3 @@ func (s *ResourceService) addTagsToResource(resourceID uuid.UUID, tagNames []str
 
 	return nil
 }
-
-

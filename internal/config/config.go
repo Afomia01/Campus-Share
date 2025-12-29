@@ -14,11 +14,17 @@ type Config struct {
 	Server    ServerConfig
 	Database  DatabaseConfig
 	JWT       JWTConfig
-	AWS       AWSConfig
+	Storage   StorageConfig
 	OAuth     OAuthConfig
 	CORS      CORSConfig
 	Upload    UploadConfig
 	RateLimit RateLimitConfig
+	Redis     RedisConfig
+}
+
+// RedisConfig holds redis-related configuration
+type RedisConfig struct {
+	URL string
 }
 
 // ServerConfig holds server-related configuration
@@ -44,13 +50,10 @@ type JWTConfig struct {
 	ExpirationHours int
 }
 
-// AWSConfig holds AWS S3-related configuration
-type AWSConfig struct {
-	AccessKeyID     string
-	SecretAccessKey string
-	Region          string
-	BucketName      string
-	Endpoint        string // For MinIO or custom S3-compatible services
+// StorageConfig holds storage-related configuration
+type StorageConfig struct {
+	UploadDir string
+	BaseURL   string
 }
 
 // OAuthConfig holds OAuth-related configuration
@@ -102,12 +105,9 @@ func Load() (*Config, error) {
 			Secret:          getEnv("JWT_SECRET", "change-this-secret-key"),
 			ExpirationHours: getEnvAsInt("JWT_EXPIRATION_HOURS", 24),
 		},
-		AWS: AWSConfig{
-			AccessKeyID:     getEnv("AWS_ACCESS_KEY_ID", ""),
-			SecretAccessKey: getEnv("AWS_SECRET_ACCESS_KEY", ""),
-			Region:          getEnv("AWS_REGION", "us-east-1"),
-			BucketName:      getEnv("S3_BUCKET_NAME", ""),
-			Endpoint:        getEnv("S3_ENDPOINT", ""),
+		Storage: StorageConfig{
+			UploadDir: getEnv("UPLOAD_DIR", "uploads"),
+			BaseURL:   getEnv("BASE_URL", "http://localhost:8080"),
 		},
 		OAuth: OAuthConfig{
 			GoogleClientID:     getEnv("GOOGLE_CLIENT_ID", ""),
@@ -121,11 +121,14 @@ func Load() (*Config, error) {
 		},
 		Upload: UploadConfig{
 			MaxFileSizeMB:    getEnvAsInt("MAX_FILE_SIZE_MB", 100),
-			AllowedFileTypes: getEnvAsSlice("ALLOWED_FILE_TYPES", []string{"pdf", "doc", "docx", "ppt", "pptx", "xls", "xlsx", "jpg", "jpeg", "png", "gif", "mp4", "avi"}),
+			AllowedFileTypes: getEnvAsSlice("ALLOWED_FILE_TYPES", []string{"pdf", "doc", "docx", "ppt", "pptx", "xls", "xlsx", "jpg", "jpeg", "png", "gif", "mp4", "avi", "txt"}),
 		},
 		RateLimit: RateLimitConfig{
 			Requests: getEnvAsInt("RATE_LIMIT_REQUESTS", 100),
 			Window:   time.Duration(getEnvAsInt("RATE_LIMIT_WINDOW_MINUTES", 15)) * time.Minute,
+		},
+		Redis: RedisConfig{
+			URL: getEnv("REDIS_URL", "redis://localhost:6379/0"),
 		},
 	}
 

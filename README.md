@@ -1,170 +1,128 @@
-# Campus Academic Resource Sharing Platform - Backend API
+# Campus Academic Resource Sharing Platform - Frontend
 
-An open-source backend API for a campus academic resource sharing platform built with Go. This platform enables university students to share, search, and download academic resources across campuses.
+An open-source React application built for university students to share, search, and download academic resources (notes, slides, exam papers) across campuses. This project serves as the client-side interface for the Go-based backend API.
 
-## Features
+![Banner Placeholder](https://via.placeholder.com/1200x400?text=Campus+Share+Platform+Banner)
+*> **Image Description:** A wide banner shot of the application homepage showing the logo, navigation bar, and a welcoming hero section.*
 
-- 🔐 **User Authentication**: JWT-based authentication with OAuth support (Google)
-- 📚 **Resource Management**: Upload, download, search, and categorize academic resources
-- 🏫 **Multi-University Support**: Cross-university resource sharing with access controls
-- 💬 **Community Features**: Comments, ratings, bookmarks, and tagging
-- 🛡️ **Admin Panel**: Content moderation and analytics dashboard
-- ☁️ **Cloud Storage**: S3-compatible storage integration for scalable file handling
+## 🚀 Features Implemented
 
-## Tech Stack
+### 🔐 Authentication & User Profile
+*   **Secure Login & Registration:** JWT-based authentication flow.
+*   **Protected Routes:** Unauthorized users are automatically redirected to login.
+*   **Profile Management:** View and update user details (Name, Major, Year).
+*   **Role Handling:** Support for Student and Admin roles.
 
-- **Language**: Go 1.21+
-- **Framework**: Gin Web Framework
-- **Database**: PostgreSQL
-- **ORM**: GORM
-- **Authentication**: JWT (JSON Web Tokens)
-- **Storage**: AWS S3 / MinIO (S3-compatible)
-- **Documentation**: OpenAPI/Swagger
+### 📚 Resource Management
+*   **Resource Feed:** Grid view of academic resources with metadata (views, downloads).
+*   **Advanced Search:** Filter resources by title or description.
+*   **File Upload:** Drag-and-drop interface for uploading PDFs, PPTs, and DOCs with metadata (Sharing Level, Tags, Course).
+*   **Secure Downloads:** Direct S3-signed URL downloads via backend integration.
 
-## Project Structure
+### 💬 Social & Interactive
+*   **Comments System:** Discuss resources with a threaded comment section.
+*   **Star Ratings:** 5-star rating system with real-time average updates.
+*   **Bookmarks:** Save resources to a personal "Saved" list for quick access.
+
+## 🛠️ Tech Stack
+
+*   **Framework:** [React 18](https://react.dev/)
+*   **Build Tool:** [Vite](https://vitejs.dev/)
+*   **Styling:** [Tailwind CSS v4.1](https://tailwindcss.com/)
+*   **Routing:** [React Router v6](https://reactrouter.com/)
+*   **HTTP Client:** [Axios](https://axios-http.com/) (with Interceptors for JWT handling)
+*   **Icons:** [Lucide React](https://lucide.dev/)
+
+## 📂 Project Structure
+
+The project follows a feature-based architecture for scalability:
+
+```text
+src/
+├── components/         # Shared UI components (StarRating, Buttons)
+├── features/           # Feature-specific logic
+│   ├── auth/           # AuthContext, ProtectedRoute, Login forms
+│   ├── resources/      # ResourceCard, Feed logic
+│   ├── admin/          # Admin specific components
+│   └── social/         # Comments, Ratings logic
+├── layouts/            # Layout shells (AppLayout with Sidebar)
+├── lib/                # Utilities (Axios instance, tailwind-merge)
+├── pages/              # Main page views (Dashboard, Upload, Profile)
+└── services/           # API integration services (auth, resource, social)
+
 
 ```
-backend/
-├── cmd/
-│   └── server/
-│       └── main.go          # Application entry point
-├── internal/
-│   ├── config/              # Configuration management
-│   ├── database/            # Database connection and migrations
-│   ├── models/              # Data models
-│   ├── handlers/            # HTTP request handlers
-│   ├── middleware/          # HTTP middleware (auth, CORS, etc.)
-│   ├── services/            # Business logic
-│   ├── storage/             # Cloud storage integration
-│   └── utils/               # Utility functions
-├── pkg/
-│   └── jwt/                 # JWT utilities
-├── migrations/              # Database migration files
-├── docs/                    # API documentation
-├── .env.example             # Environment variables template
-├── go.mod                   # Go module dependencies
-└── README.md                # This file
-```
 
-## Prerequisites
+## 📸 Screenshots & UI
 
-- Go 1.21 or higher
-- PostgreSQL 12 or higher
-- AWS S3 account (or MinIO for local development)
-- Git
+### 1. The Dashboard (Feed)
+<img width="1919" height="910" alt="image" src="https://github.com/user-attachments/assets/e37a3942-ae79-4eb6-b735-d6eea375f31a" />
 
-## Installation
+> **Image Description:** The main application view. On the left is the navigation sidebar. In the center is a responsive grid of "Resource Cards," each showing a file icon, title, tags, and download count. A search bar is prominent at the top.
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/campus-share/backend.git
-   cd backend
-   ```
+### 2. Resource Details & Interaction
+<img width="938" height="800" alt="image" src="https://github.com/user-attachments/assets/dac4e5a2-07b0-442c-a100-7c5ea6e09242" />
 
-2. **Install dependencies**
-   ```bash
-   go mod download
-   ```
+> **Image Description:** A detailed view of a specific file. It shows the full description, a "Download" button, a "Bookmark" toggle, the 5-star rating component, and a comment section below.
 
-3. **Set up environment variables**
-   ```bash
-   cp .env.example .env
-   # Edit .env with your configuration
-   ```
+### 3. Upload Interface
+<img width="814" height="881" alt="image" src="https://github.com/user-attachments/assets/edb23be1-eaac-482f-889d-10ede096f9c1" />
 
-4. **Run database migrations**
-   ```bash
-   go run cmd/server/main.go migrate
-   ```
+> **Image Description:** A clean form with a large drag-and-drop zone for files. Below it are input fields for Title, Description, and dropdowns for Resource Type (Notes, Slides) and Sharing Level (Public, University).
 
-5. **Start the server**
-   ```bash
-   go run cmd/server/main.go
-   ```
+### 4. BookMark Files
+<img width="966" height="704" alt="image" src="https://github.com/user-attachments/assets/8634edc0-d997-4814-b05c-53ae3b78e666" />
 
-The API will be available at `http://localhost:8080`
-
-## Environment Variables
-
-See `.env.example` for all required environment variables. Key variables include:
-
-- `DATABASE_URL`: PostgreSQL connection string
-- `JWT_SECRET`: Secret key for JWT token signing
-- `AWS_ACCESS_KEY_ID`: AWS S3 access key
-- `AWS_SECRET_ACCESS_KEY`: AWS S3 secret key
-- `AWS_REGION`: AWS region
-- `S3_BUCKET_NAME`: S3 bucket name for file storage
-- `GOOGLE_CLIENT_ID`: Google OAuth client ID
-- `GOOGLE_CLIENT_SECRET`: Google OAuth client secret
-
-## API Endpoints
-
-### Authentication
-- `POST /api/v1/auth/register` - User registration
-- `POST /api/v1/auth/login` - User login
-- `POST /api/v1/auth/google` - Google OAuth login
-- `GET /api/v1/auth/me` - Get current user profile
-- `PUT /api/v1/auth/profile` - Update user profile
-
-### Resources
-- `GET /api/v1/resources` - List/search resources
-- `POST /api/v1/resources` - Upload new resource
-- `GET /api/v1/resources/:id` - Get resource details
-- `PUT /api/v1/resources/:id` - Update resource
-- `DELETE /api/v1/resources/:id` - Delete resource
-- `GET /api/v1/resources/:id/download` - Download resource
-
-### Comments
-- `GET /api/v1/resources/:id/comments` - Get resource comments
-- `POST /api/v1/resources/:id/comments` - Add comment
-- `PUT /api/v1/comments/:id` - Update comment
-- `DELETE /api/v1/comments/:id` - Delete comment
-
-### Ratings
-- `POST /api/v1/resources/:id/rating` - Rate resource
-- `GET /api/v1/resources/:id/rating` - Get resource rating
-
-### Bookmarks
-- `GET /api/v1/bookmarks` - Get user bookmarks
-- `POST /api/v1/bookmarks` - Add bookmark
-- `DELETE /api/v1/bookmarks/:id` - Remove bookmark
-
-### Admin
-- `GET /api/v1/admin/analytics` - Get platform analytics
-- `GET /api/v1/admin/reports` - Get reported content
-- `POST /api/v1/admin/reports/:id/approve` - Approve report
-- `POST /api/v1/admin/reports/:id/reject` - Reject report
-- `POST /api/v1/admin/users/:id/ban` - Ban user
-
-For detailed API documentation, see `docs/api.md` or visit `/swagger/index.html` when the server is running.
-
-## Development
-
-### Running Tests
-```bash
-go test ./...
-```
-
-### Code Formatting
-```bash
-go fmt ./...
-```
-
-### Building
-```bash
-go build -o bin/server cmd/server/main.go
-```
-
-## Contributing
-
-Please read [CONTRIBUTING.md](../CONTRIBUTING.md) for details on our code of conduct and the process for submitting pull requests.
-
-## License
-
-This project is licensed under the GNU General Public License v3.0 - see the [LICENSE](../LICENSE) file for details.
-
-## Support
-
-For support, email support@campus-share.com or open an issue in the repository.
+>**Image Description:** This feature is just like the telegram's `saved message`  feature
 
 
+## ⚡ Getting Started
+
+### Prerequisites
+*   Node.js (v18 or higher recommended)
+*   npm
+
+### Installation
+
+1.  **Clone the repository**
+    ```bash
+    git clone https://github.com/your-username/campus-share-frontend.git
+    cd campus-share-frontend
+    ```
+
+2.  **Install Dependencies**
+    ```bash
+    npm install
+    ```
+
+3.  **Environment Setup**
+    Create a `.env` file in the root directory:
+    ```env
+    # URL of your Go Backend API
+    VITE_API_URL=http://localhost:8080/api/v1
+    ```
+
+4.  **Run Development Server**
+    ```bash
+    npm run dev
+    ```
+    Access the app at `http://localhost:5173`
+
+## 🔌 API Integration Logic
+
+This frontend communicates with the backend using a centralized **Axios instance** (`src/lib/axios.js`).
+
+*   **Request Interceptor:** Automatically attaches the `Authorization: Bearer <token>` to every request if a user is logged in.
+*   **Response Interceptor:** Global error handling. If the backend returns `401 Unauthorized`, the app automatically clears local storage and redirects the user to `/login`.
+
+## 🤝 Contributing
+
+1.  Fork the repository.
+2.  Create a feature branch (`git checkout -b feature/AmazingFeature`).
+3.  Commit your changes.
+4.  Push to a branch.
+5.  Open a Pull Request.
+
+## 📄 License
+
+Distributed under the MIT License. See [LICENSE](./LICENSE) for more information.
