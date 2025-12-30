@@ -2,7 +2,7 @@
 
 An open-source React application built for university students to share, search, and download academic resources (notes, slides, exam papers) across campuses. This project serves as the client-side interface for the Go-based backend API.
 
-![Banner Placeholder](https://via.placeholder.com/1200x400?text=Campus+Share+Platform+Banner)
+<img width="1901" height="912" alt="image" src="https://github.com/user-attachments/assets/f8cfd276-1ac2-4fd1-9087-a1b7815517ee" />
 *> **Image Description:** A wide banner shot of the application homepage showing the logo, navigation bar, and a welcoming hero section.*
 
 ## 🚀 Features Implemented
@@ -56,22 +56,25 @@ src/
 ## 📸 Screenshots & UI
 
 ### 1. The Dashboard (Feed)
-<img width="1919" height="910" alt="image" src="https://github.com/user-attachments/assets/e37a3942-ae79-4eb6-b735-d6eea375f31a" />
+<img width="1898" height="908" alt="image" src="https://github.com/user-attachments/assets/81307d56-d224-4011-aa7d-d5c7d21918f4" />
 
 > **Image Description:** The main application view. On the left is the navigation sidebar. In the center is a responsive grid of "Resource Cards," each showing a file icon, title, tags, and download count. A search bar is prominent at the top.
 
 ### 2. Resource Details & Interaction
-<img width="938" height="800" alt="image" src="https://github.com/user-attachments/assets/dac4e5a2-07b0-442c-a100-7c5ea6e09242" />
+<img width="1908" height="916" alt="image" src="https://github.com/user-attachments/assets/7940e419-cf96-4f8f-87ab-fc4fa084e3c4" />
+
 
 > **Image Description:** A detailed view of a specific file. It shows the full description, a "Download" button, a "Bookmark" toggle, the 5-star rating component, and a comment section below.
 
 ### 3. Upload Interface
-<img width="814" height="881" alt="image" src="https://github.com/user-attachments/assets/edb23be1-eaac-482f-889d-10ede096f9c1" />
+<img width="1913" height="904" alt="image" src="https://github.com/user-attachments/assets/986dad43-7472-4ee2-9623-d6559844a71b" />
+
 
 > **Image Description:** A clean form with a large drag-and-drop zone for files. Below it are input fields for Title, Description, and dropdowns for Resource Type (Notes, Slides) and Sharing Level (Public, University).
 
 ### 4. BookMark Files
-<img width="966" height="704" alt="image" src="https://github.com/user-attachments/assets/8634edc0-d997-4814-b05c-53ae3b78e666" />
+<img width="1919" height="908" alt="image" src="https://github.com/user-attachments/assets/5a58a566-e3c8-4e36-a788-d381bfbf726f" />
+
 
 >**Image Description:** This feature is just like the telegram's `saved message`  feature
 
@@ -99,7 +102,8 @@ src/
     Create a `.env` file in the root directory:
     ```env
     # URL of your Go Backend API
-    VITE_API_URL=http://localhost:8080/api/v1
+    VITE_API_URL=https://campus-share-backend.onrender.com/api/v1
+
     ```
 
 4.  **Run Development Server**
