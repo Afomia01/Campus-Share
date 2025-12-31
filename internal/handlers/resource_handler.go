@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"context"
 	"encoding/json"
 	"net/http"
 	"strconv"
@@ -108,6 +109,9 @@ func (h *ResourceHandler) CreateResource(c *gin.Context) {
 
 	// Publish event
 	go func() {
+		// Create a background context because c.Request.Context() is cancelled when the request finishes
+		ctx := context.Background()
+
 		eventData := map[string]interface{}{
 			"resource_id": resource.ID,
 			"title":       resource.Title,
@@ -122,7 +126,7 @@ func (h *ResourceHandler) CreateResource(c *gin.Context) {
 			return
 		}
 
-		if err := events.PublishEvent(c.Request.Context(), "resource.created", jsonData); err != nil {
+		if err := events.PublishEvent(ctx, "resource.created", jsonData); err != nil {
 			// Log error but don't fail request
 			// In a real app use a logger
 			println("Failed to publish event:", err.Error())

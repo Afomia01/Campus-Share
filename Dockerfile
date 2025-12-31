@@ -1,6 +1,5 @@
-# Build stage
+# Build Stage
 FROM golang:1.23-alpine AS builder
-
 WORKDIR /app
 
 # Install dependencies
@@ -10,28 +9,37 @@ RUN go mod download
 # Copy source code
 COPY . .
 
-# Build the application
+# Build all binaries
 RUN CGO_ENABLED=0 GOOS=linux go build -o main ./cmd/server
 RUN CGO_ENABLED=0 GOOS=linux go build -o notification-service ./cmd/notification-service
 RUN CGO_ENABLED=0 GOOS=linux go build -o analytics-service ./cmd/analytics-service
+RUN CGO_ENABLED=0 GOOS=linux go build -o ai-service ./cmd/ai-service
 
-# Final stage
-FROM alpine:latest
-
+# --- Target: App (Main API) ---
+FROM alpine:latest AS app
 WORKDIR /app
-
-# Install ca-certificates for HTTPS calls
 RUN apk --no-cache add ca-certificates
-
-# Copy binary from builder
 COPY --from=builder /app/main .
-COPY --from=builder /app/notification-service .
-COPY --from=builder /app/analytics-service .
 COPY start.sh .
 RUN chmod +x start.sh
-
-# Expose port
 EXPOSE 8080
-
-# Run the application
 CMD ["./start.sh"]
+
+# --- Target: Notification Service ---
+FROM alpine:latest AS notification-service
+WORKDIR /app
+COPY --from=builder /app/notification-service .
+CMD ["./notification-service"]
+
+# --- Target: Analytics Service ---
+FROM alpine:latest AS analytics-service
+WORKDIR /app
+COPY --from=builder /app/analytics-service .
+CMD ["./analytics-service"]
+
+# --- Target: AI Service ---
+FROM alpine:latest AS ai-service
+WORKDIR /app
+RUN apk --no-cache add ca-certificates
+COPY --from=builder /app/ai-service .
+CMD ["./ai-service"]
