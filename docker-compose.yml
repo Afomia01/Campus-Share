@@ -2,7 +2,9 @@ version: '3.8'
 
 services:
   app:
-    build: .
+    build:
+      context: .
+      target: app
     ports:
       - "8080:8080"
     environment:
@@ -26,8 +28,9 @@ services:
     restart: unless-stopped
 
   notification-service:
-    build: .
-    command: ./notification-service
+    build:
+      context: .
+      target: notification-service
     environment:
       - REDIS_URL=redis://redis:6379/0
     depends_on:
@@ -35,8 +38,9 @@ services:
     restart: unless-stopped
 
   analytics-service:
-    build: .
-    command: ./analytics-service
+    build:
+      context: .
+      target: analytics-service
     environment:
       - REDIS_URL=redis://redis:6379/0
     depends_on:
@@ -61,5 +65,16 @@ services:
       - "6379:6379"
     restart: unless-stopped
 
+  ai-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: ai-service
+    restart: always
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - GEMINI_API_KEY=AIzaSyDcJC0XYgKuQeHfW_4CSKbQ9W9zoML4RoM
+    depends_on:
+      - redis
 volumes:
   postgres_data:
